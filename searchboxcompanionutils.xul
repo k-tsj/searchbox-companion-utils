@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script type="application/javascript">
+  <![CDATA[
+    addEventListener("load", function() {
+        // kludge
+        //   override allinonesearch_onkeypress function,
+        //   to disable f3overlay properly.
+        allinonesearch_onkeypress = function allinonesearch_onkeypress(e) {
+            if(e.keyCode==114){
+                var f3_keys=document.getElementsByAttribute("keycode", "VK_F3");
+                if(allinonesearchprefs.getBoolPref("extensions.searchboxcompanion.f3overlay")==true)
+                {
+                    f3_keys[0].setAttribute("command","cmd_searchboxcompanion-search");
+                    f3_keys[1].setAttribute("command","cmd_searchboxcompanion-prev");
+                }
+            }
+            return;
+        };
+
+        document.getElementById("searchbar").addEventListener("keydown", function(aEvent) {
+            function cancelEvent() {
+                aEvent.preventDefault();
+                aEvent.stopPropagation();
+            }
+            if (aEvent.keyCode != KeyEvent.DOM_VK_RETURN)
+                return;
+            // Ctrl+Enter calls seach.
+            if (aEvent.ctrlKey && !(aEvent.altKey || aEvent.shiftKey)) {
+                allinonesearch_search();
+                BrowserSearch.webSearch();
+                cancelEvent();
+            // Ctrl+Alt+Enter calls highlight
+            } else if (aEvent.ctrlKey && aEvent.altKey && !aEvent.shiftKey) {
+                if(allinonesearch_highlight=='off') {
+                    allinonesearch_hightingstate();
+                } else {
+                    ObjAllinonesearch.clearallitems();
+                }
+                cancelEvent();
+            }
+        }, false);
+    }, false);
+  ]]>
+  </script>
+</overlay>

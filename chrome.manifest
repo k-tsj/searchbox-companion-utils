@@ -1,0 +1,2 @@
+content searchboxcompanionutils .
+overlay chrome://browser/content/browser.xul chrome://searchboxcompanionutils/content/searchboxcompanionutils.xul
